@@ -1,0 +1,41 @@
+name: MLOps CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      
+    - name: Build Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: false
+        load: true
+        tags: ml-model:test
+        
+    - name: Run Tests in Docker
+      run: |
+        docker run --rm ml-model:test pytest test_model.py
+
+  deploy-to-test:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Deploy model to testing environment
+      run: |
+        echo "Simulating deployment to testing environment..."
+        # In a real scenario, this would push the Docker image to a registry 
+        # and/or deploy it to a staging server/cluster.
+        echo "Deployment to testing environment successful."
