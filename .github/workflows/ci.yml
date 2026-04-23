@@ -26,7 +26,7 @@ jobs:
         
     - name: Run Tests in Docker
       run: |
-        docker run --rm ml-model:test pytest test_model.py
+        docker run --rm ml-model:test python test_model.py
 
   deploy-to-test:
     needs: build-and-test
